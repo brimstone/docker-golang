@@ -1,0 +1,69 @@
+#!/bin/sh
+
+set -ue
+exportCC(){
+if [ "${GOOS}" = "linux" ]; then
+	if [ "${GOARCH}" = "arm" ]; then
+		export CC=arm-linux-gnueabihf-gcc-6
+		export CXX=arm-linux-gnueabihf-g++-6
+	fi
+elif [ "${GOOS}" = "windows" ]; then
+	if [ "${GOARCH}" = "386" ]; then
+		export CC=i686-w64-mingw32-gcc
+	elif [ "${GOARCH}" = "amd64" ]; then
+		export CC=x86_64-w64-mingw32-gcc
+	fi
+elif [ "${GOOS}" = "darwin" ]; then
+	LD_STATIC=""
+	if [ "${GOARCH}" = "386" ]; then
+		export CC=o32-clang
+		export CCXX=o32-clang++
+	elif [ "${GOARCH}" = "amd64" ]; then
+		export CC=o64-clang
+		export CCXX=o64-clang++
+	fi
+elif [ "${GOOS}" = "freebsd" ]; then
+	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
+	export CC=x86_64-pc-freebsd10-gcc
+	export CPP=x86_64-pc-freebsd10-gpp
+fi
+# TODO ARM v6 and ARM 8
+}
+
+export PATH="$PATH:/usr/local/osx-ndk-x86/bin:/freebsd/bin"
+export CC=/usr/local/musl/bin/musl-gcc
+LDFLAGS="${LDFLAGS:-}"
+LD_STATIC="-static"
+STRIP="-s"
+export CGO_ENABLED="${CGO_ENABLED:-0}"
+[ -n "$VERBOSE" ] && set -x
+
+if [ "$#" = 0 ]; then
+	echo "Assuming the working directory contains source files." >&2
+fi
+
+if [ -n "$TAR" ]; then
+	tar -x >&2
+	(
+	[ -n "${1:-}" ] && [ -d "src/$1" ] && cd "src/$1"
+	/usr/local/go/bin/go get -v -d >&2
+	)
+fi
+
+if [ "$CGO_ENABLED" = 1 ]; then
+	exportCC
+fi
+export CGO_LDFLAGS="$LD_STATIC $STRIP -g -O2"
+
+(
+echo "CGO_ENABLED=$CGO_ENABLED"
+echo "CC=$CC"
+echo "CGO_LDFLAGS=$CGO_LDFLAGS"
+echo Running /usr/local/go/bin/go build -v -x -ldflags "\"$LDFLAGS"\" "$@"
+) >&2
+#/usr/local/go/bin/go build -v -a -ldflags "$LD_STATIC -s -w $LDFLAGS" "$@" >&2
+/usr/local/go/bin/go build -v -ldflags "$LDFLAGS" "$@" >&2
+
+if [ -n "$TAR" ]; then
+	tar -c .
+fi
