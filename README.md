@@ -1,9 +1,9 @@
-golang-musl
-===========
+golang
+======
 
-This is a container to build golang static binaries with musl instead of glibc.
+This is a container to build golang static binaries with cgo musl.
 
-[![](https://images.microbadger.com/badges/image/brimstone/golang-musl.svg)](https://microbadger.com/images/brimstone/golang-musl "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/brimstone/golang.svg)](https://microbadger.com/images/brimstone/golang "Get your own image badge on microbadger.com")
 
 
 Usage

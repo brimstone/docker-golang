@@ -1,4 +1,4 @@
-ARG PACKAGE=test-nocgo
+ARG REPOSITORY=test-nocgo
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME} as builder
 

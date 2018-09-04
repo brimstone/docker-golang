@@ -15,6 +15,8 @@ elif [ "${GOOS}" = "windows" ]; then
 	fi
 elif [ "${GOOS}" = "darwin" ]; then
 	LD_STATIC=""
+	STRIP=""
+	CGO_CFLAGS="${CGO_CFLAGS:-} -H"
 	if [ "${GOARCH}" = "386" ]; then
 		export CC=o32-clang
 		export CCXX=o32-clang++
@@ -35,6 +37,8 @@ export CC=/usr/local/musl/bin/musl-gcc
 LDFLAGS="${LDFLAGS:-}"
 LD_STATIC="-static"
 STRIP="-s"
+CGO_CFLAGS="${CGO_CFLAGS:--g -O2}"
+CGO_LDFLAGS="${CGO_LDFLAGS:--g -O2}"
 export CGO_ENABLED="${CGO_ENABLED:-0}"
 [ -n "$VERBOSE" ] && set -x
 
@@ -53,17 +57,24 @@ fi
 if [ "$CGO_ENABLED" = 1 ]; then
 	exportCC
 fi
-export CGO_LDFLAGS="$LD_STATIC $STRIP -g -O2"
+export CGO_CFLAGS
+export CGO_LDFLAGS="$CGO_LDFLAGS $LD_STATIC $STRIP"
 
 (
 echo "CGO_ENABLED=$CGO_ENABLED"
 echo "CC=$CC"
+echo "CGO_CFLAGS=$CGO_CFLAGS"
 echo "CGO_LDFLAGS=$CGO_LDFLAGS"
-echo Running /usr/local/go/bin/go build -v -x -ldflags "\"$LDFLAGS"\" "$@"
+echo "PWD=$PWD"
+echo "LDFLAGS=$LDFLAGS"
+echo Running /usr/local/go/bin/go build -v -ldflags "\"$LDFLAGS"\" "$@"
 ) >&2
-#/usr/local/go/bin/go build -v -a -ldflags "$LD_STATIC -s -w $LDFLAGS" "$@" >&2
-/usr/local/go/bin/go build -v -ldflags "$LDFLAGS" "$@" >&2
-
+ret=0
+/usr/local/go/bin/go build -v "$@" >&2 || ret=$?
+if [ $ret != 0 ]; then
+	echo "Exit: $ret" >&2
+	exit $ret
+fi
 if [ -n "$TAR" ]; then
 	tar -c .
 fi

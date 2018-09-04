@@ -138,9 +138,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.schema-version="1.0.0-rc1"
 
+ONBUILD ARG REPOSITORY
 ONBUILD ARG PACKAGE
 ONBUILD ARG CGO_ENABLED
-ONBUILD ENV CGO_ENABLED=${CGO_ENABLED}
-ONBUILD COPY . /go/src/${PACKAGE}/
-ONBUILD WORKDIR /go/src/${PACKAGE}/
-ONBUILD RUN /loader -o /app
+ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
+            PACKAGE=${PACKAGE}
+ONBUILD COPY . /go/src/${REPOSITORY}/
+ONBUILD WORKDIR /go/src/${REPOSITORY}/
+ONBUILD RUN /loader -o /app "${PACKAGE:-}"
