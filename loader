@@ -6,6 +6,9 @@ if [ "${GOOS}" = "linux" ]; then
 	if [ "${GOARCH}" = "arm" ]; then
 		export CC=arm-linux-gnueabihf-gcc-6
 		export CXX=arm-linux-gnueabihf-g++-6
+	elif [ "${GOARCH}" = "amd64" ]; then
+		#export CC=/usr/local/musl/bin/musl-gcc
+		LDFLAGS="-linkmode external -extldflags \"-static\""
 	fi
 elif [ "${GOOS}" = "windows" ]; then
 	if [ "${GOARCH}" = "386" ]; then
@@ -14,15 +17,13 @@ elif [ "${GOOS}" = "windows" ]; then
 		export CC=x86_64-w64-mingw32-gcc
 	fi
 elif [ "${GOOS}" = "darwin" ]; then
-	LD_STATIC=""
-	STRIP=""
-	CGO_CFLAGS="${CGO_CFLAGS:-} -H"
+	CGO_CXXFLAGS="-H"
 	if [ "${GOARCH}" = "386" ]; then
 		export CC=o32-clang
-		export CCXX=o32-clang++
+		export CXX=o32-clang++
 	elif [ "${GOARCH}" = "amd64" ]; then
 		export CC=o64-clang
-		export CCXX=o64-clang++
+		export CXX=o64-clang++
 	fi
 elif [ "${GOOS}" = "freebsd" ]; then
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
@@ -33,14 +34,16 @@ fi
 }
 
 export PATH="$PATH:/usr/local/osx-ndk-x86/bin:/freebsd/bin"
-export CC=/usr/local/musl/bin/musl-gcc
 LDFLAGS="${LDFLAGS:-}"
-LD_STATIC="-static"
-STRIP="-s"
 CGO_CFLAGS="${CGO_CFLAGS:--g -O2}"
 CGO_LDFLAGS="${CGO_LDFLAGS:--g -O2}"
+CGO_CXXFLAGS="${CGO_LDFLAGS:--g -O2}"
 export CGO_ENABLED="${CGO_ENABLED:-0}"
-[ -n "$VERBOSE" ] && set -x
+X=""
+if [ -n "$VERBOSE" ]; then
+	set -x
+	X="-x"
+fi
 
 if [ "$#" = 0 ]; then
 	echo "Assuming the working directory contains source files." >&2
@@ -58,19 +61,21 @@ if [ "$CGO_ENABLED" = 1 ]; then
 	exportCC
 fi
 export CGO_CFLAGS
-export CGO_LDFLAGS="$CGO_LDFLAGS $LD_STATIC $STRIP"
+export CGO_LDFLAGS="$CGO_LDFLAGS"
+
 
 (
 echo "CGO_ENABLED=$CGO_ENABLED"
-echo "CC=$CC"
+echo "CC=${CC:-}"
 echo "CGO_CFLAGS=$CGO_CFLAGS"
 echo "CGO_LDFLAGS=$CGO_LDFLAGS"
+echo "CGO_CXXFLAGS=$CGO_CXXFLAGS"
 echo "PWD=$PWD"
 echo "LDFLAGS=$LDFLAGS"
-echo Running /usr/local/go/bin/go build -v -ldflags "\"$LDFLAGS"\" "$@"
+echo Running /usr/local/go/bin/go build -v "$X" -ldflags "\"$LDFLAGS"\" "$@"
 ) >&2
 ret=0
-/usr/local/go/bin/go build -v "$@" >&2 || ret=$?
+/usr/local/go/bin/go build -v "$X" -ldflags "$LDFLAGS" "$@" >&2 || ret=$?
 if [ $ret != 0 ]; then
 	echo "Exit: $ret" >&2
 	exit $ret
