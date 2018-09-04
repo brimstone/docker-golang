@@ -36,6 +36,10 @@ RUN OSX_SDK_PATH=https://s3.dockerproject.org/darwin/v2/$OSX_SDK.tar.xz \
  && mv /osxcross/target $OSX_NDK_X86 \
  && rm -rf /osxcross
 
+RUN wget https://github.com/karalabe/xgo/blob/master/docker/base/patch.tar.xz?raw=true -O patch.tar.xz \
+ && tar -xf patch.tar.xz -C $OSX_NDK_X86/SDK/$OSX_SDK/usr/include/c++ \
+ && rm patch.tar.xz
+
 # Setup Freebsd, stolen from https://github.com/sandvine/freebsd-cross-build
 RUN mkdir -p /freebsd/x86_64-pc-freebsd10 && cd /freebsd \
  && wget http://ftp4.us.freebsd.org/pub/FreeBSD/releases/amd64/10.1-RELEASE/base.txz \

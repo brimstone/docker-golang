@@ -17,7 +17,6 @@ elif [ "${GOOS}" = "windows" ]; then
 		export CC=x86_64-w64-mingw32-gcc
 	fi
 elif [ "${GOOS}" = "darwin" ]; then
-	CGO_CXXFLAGS="-H"
 	if [ "${GOARCH}" = "386" ]; then
 		export CC=o32-clang
 		export CXX=o32-clang++
@@ -72,10 +71,10 @@ echo "CGO_LDFLAGS=$CGO_LDFLAGS"
 echo "CGO_CXXFLAGS=$CGO_CXXFLAGS"
 echo "PWD=$PWD"
 echo "LDFLAGS=$LDFLAGS"
-echo Running /usr/local/go/bin/go build -v "$X" -ldflags "\"$LDFLAGS"\" "$@"
+echo Running /usr/local/go/bin/go build -v -ldflags "\"$LDFLAGS"\" $X "$@"
 ) >&2
 ret=0
-/usr/local/go/bin/go build -v "$X" -ldflags "$LDFLAGS" "$@" >&2 || ret=$?
+/usr/local/go/bin/go build -v -ldflags "$LDFLAGS" $X "$@" >&2 || ret=$?
 if [ $ret != 0 ]; then
 	echo "Exit: $ret" >&2
 	exit $ret
