@@ -32,9 +32,9 @@ display-results(){
 			echo
 		fi
 	else
-		sym=" F "
+		sym="F "
 		if [ "$ret" = 0 ]; then
-			sym=" ✓ "
+			sym="✓ "
 		fi
 		printf "%s\\t%s\\t%s\\t%s\\t%d\\n" "$sym" "$arch" "$os" "$cgo"
 		echo "$o" > "${arch}_${os}_${cgo}.results"
