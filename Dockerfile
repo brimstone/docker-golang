@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-uec"]
 
 # Setup arm builder, windows, and OS X
 RUN apt-get update \
- && apt install -y build-essential \
+ && apt install -y build-essential libssl-dev \
     gcc-6-arm-linux-gnueabihf g++-6-arm-linux-gnueabihf \
     mingw-w64 \
     clang \
