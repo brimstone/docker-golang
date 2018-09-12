@@ -3,14 +3,15 @@
 set -ue
 exportCC(){
 if [ "${GOOS}" = "linux" ]; then
+	LDFLAGS="-linkmode external -extldflags \"-static\" -s -w"
 	if [ "${GOARCH}" = "arm" ]; then
 		export CC=arm-linux-gnueabihf-gcc-6
 		export CXX=arm-linux-gnueabihf-g++-6
-	elif [ "${GOARCH}" = "amd64" ]; then
+	#elif [ "${GOARCH}" = "amd64" ]; then
 		#export CC=/usr/local/musl/bin/musl-gcc
-		LDFLAGS="-linkmode external -extldflags \"-static\""
 	fi
 elif [ "${GOOS}" = "windows" ]; then
+	LDFLAGS="-s -w"
 	if [ "${GOARCH}" = "386" ]; then
 		export CC=i686-w64-mingw32-gcc
 	elif [ "${GOARCH}" = "amd64" ]; then
@@ -28,6 +29,7 @@ elif [ "${GOOS}" = "freebsd" ]; then
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
 	export CC=x86_64-pc-freebsd10-gcc
 	export CPP=x86_64-pc-freebsd10-gpp
+	LDFLAGS="-linkmode external -extldflags \"-static\" -s -w"
 fi
 # TODO ARM v6 and ARM 8
 }
@@ -58,6 +60,8 @@ fi
 
 if [ "$CGO_ENABLED" = 1 ]; then
 	exportCC
+else
+	LDFLAGS="-s -w"
 fi
 export CGO_CFLAGS
 export CGO_LDFLAGS="$CGO_LDFLAGS"

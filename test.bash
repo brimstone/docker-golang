@@ -43,15 +43,15 @@ display-results(){
 
 declare -A outputs
 outputs=(
-	[amd64_linux]="ELF.*x86-64.*static"
-	[386_linux]="ELF.*386.*static"
-	[arm_linux]="ELF.*ARM,*static"
+	[amd64_linux]="ELF.*x86-64.*static.*, stripped"
+	[386_linux]="ELF.*386.*static.*, stripped"
+	[arm_linux]="ELF.*ARM.*static.*, stripped"
 	[386_darwin]="Mach-O i386"
 	[amd64_darwin]="Mach-O 64"
 	[386_windows]="PE32[^+]"
 	[amd64_windows]="PE32\\+"
-	[amd64_freebsd]="x86-64.*FreeBSD.*static"
-	[386_freebsd]="80386.*FreeBSD.*static"
+	[amd64_freebsd]="x86-64.*FreeBSD.*static.*, stripped"
+	[386_freebsd]="80386.*FreeBSD.*static.*, stripped"
 	[386_onbuild]=""
 	[amd64_onbuild]=""
 )
