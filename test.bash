@@ -36,24 +36,24 @@ display-results(){
 		if [ "$ret" = 0 ]; then
 			sym="✓ "
 		fi
-		printf "%s\\t%s\\t%s\\t%s\\t%d\\n" "$sym" "$arch" "$os" "$cgo"
-		echo "$o" > "${arch}_${os}_${cgo}.results"
+		printf "%s\\t%s\\t%s\\t%s\\t%d\\n" "$sym" "$os" "$arch" "$cgo"
+		echo "$o" > "${os}_${arch}_${cgo}.results"
 	fi
 }
 
 declare -A outputs
 outputs=(
-	[amd64_linux]="ELF.*x86-64.*static.*, stripped"
-	[386_linux]="ELF.*386.*static.*, stripped"
-	[arm_linux]="ELF.*ARM.*static.*, stripped"
-	[386_darwin]="Mach-O i386"
-	[amd64_darwin]="Mach-O 64"
-	[386_windows]="PE32[^+]"
-	[amd64_windows]="PE32\\+"
-	[amd64_freebsd]="x86-64.*FreeBSD.*static.*, stripped"
-	[386_freebsd]="80386.*FreeBSD.*static.*, stripped"
-	[386_onbuild]=""
-	[amd64_onbuild]=""
+	[linux_amd64]="ELF.*x86-64.*static.*, stripped"
+	[linux_386]="ELF.*386.*static.*, stripped"
+	[linux_arm]="ELF.*ARM.*static.*, stripped"
+	[darwin_386]="Mach-O i386"
+	[darwin_amd64]="Mach-O 64"
+	[windows_386]="PE32[^+]"
+	[windows_amd64]="PE32\\+"
+	[freebsd_amd64]="x86-64.*FreeBSD.*static.*, stripped"
+	[freebsd_386]="80386.*FreeBSD.*static.*, stripped"
+	[onbuild_386]=""
+	[onbuild_amd64]=""
 )
 
 IMAGE_NAME="${IMAGE_NAME:-brimstone/golang:latest}"
@@ -65,7 +65,7 @@ for output in $(echo "${!outputs[@]}" | tr ' ' '\n' | sort); do
 			continue
 		fi
 	fi
-	IFS=_ read -r arch os <<< "$output"
+	IFS=_ read -r os arch <<< "$output"
 	for cgo in cgo nocgo; do
 		if [ "$os" = "onbuild" ]; then
 			o="$(test-onbuild 2>&1)"
