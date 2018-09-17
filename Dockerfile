@@ -3,8 +3,10 @@ FROM golang:1.11
 SHELL ["/bin/bash", "-uec"]
 
 # Setup arm builder, windows, and OS X
-RUN apt-get update \
+RUN dpkg --add-architecture i386 \
+ && apt-get update \
  && apt install -y build-essential libssl-dev \
+    libc6-dev-i386 libc6-dev:i386 lib32gcc-6-dev \
     gcc-6-arm-linux-gnueabihf g++-6-arm-linux-gnueabihf \
     mingw-w64 \
     clang \
