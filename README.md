@@ -1,9 +1,11 @@
 golang
 ======
 
-This is a container to build golang static binaries with cgo musl.
+This is a container to build golang static binaries with cgo musl for amd64, glibc for darwin, freebsd, and windows
 
-[![](https://images.microbadger.com/badges/image/brimstone/golang.svg)](https://microbadger.com/images/brimstone/golang "Get your own image badge on microbadger.com")
+[![microbadger](microbadger-image)](microbadger-link "Get your own image badge on microbadger.com")
+[microbadger-image]: https://images.microbadger.com/badges/image/brimstone/golang.svg
+[microbadger-link]: https://microbadger.com/images/brimstone/golang
 
 
 Usage
@@ -19,7 +21,7 @@ git clone https://github.com/user/repo.git src/github.com/user/repo
 Then build!
 
 ```bash
-docker run --rm -it -v "$PWD:/go" -u "$UID:$GID" brimstone/golang-musl github.com/user/repo
+docker run --rm -it -v "$PWD:/go" -u "$UID:$GID" brimstone/golang github.com/user/repo
 ```
 
 Alternate build
@@ -28,14 +30,14 @@ Alternate build
 For when another repo is included in a `src` directory, for instance, a submodule:
 ```bash
 tar c src \
-| docker run --rm -i -e TAR=1 brimstone/golang-musl github.com/user/repo \
+| docker run --rm -i -e TAR=1 brimstone/golang github.com/user/repo \
 | tar -x ./main
 ```
 
 For when there's just source files in a diretory:
 ```bash
 tar c . \
-| docker run --rm -i -e TAR=1 brimstone/golang-musl -o main \
+| docker run --rm -i -e TAR=1 brimstone/golang -o main \
 | tar -x ./main
 
 
@@ -49,7 +51,7 @@ ONBUILD
 
 This image supports docker multistage builds. Simply use this as template for your Dockerfile:
 ```
-FROM brimstone/golang-musl as builder
+FROM brimstone/golang as builder
 
 FROM scratch
 ENV ADDRESS=
