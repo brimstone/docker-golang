@@ -3,10 +3,12 @@ golang
 
 This is a container to build golang static binaries with cgo musl for amd64, glibc for darwin, freebsd, and windows
 
-[![microbadger][1]][2]
+[![microbadger][1]][2] [![docker hub][3]][4]
 
 [1]: https://images.microbadger.com/badges/image/brimstone/golang.svg
 [2]: https://microbadger.com/images/brimstone/golang
+[3]: https://img.shields.io/docker/automated/brimstone/golang.svg
+[4]: https://hub.docker.com/r/brimstone/golang
 
 
 Usage
