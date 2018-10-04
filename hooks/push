@@ -8,4 +8,4 @@ for v in $(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort); do
 done
 latest="$(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort -r | head -n 1)"
 docker tag "brimstone/golang:$latest" brimstone/golang:latest
-echo docker push "$IMAGE_NAME"
+docker push "$IMAGE_NAME"
