@@ -1,4 +1,4 @@
-FROM golang:1.11
+FROM debian:stretch
 
 SHELL ["/bin/bash", "-uec"]
 
@@ -11,6 +11,7 @@ RUN dpkg --add-architecture i386 \
     mingw-w64 \
     clang \
     m4 file \
+    wget git \
  && apt clean \
  && rm -rf /var/lib/apt/lists
 
@@ -122,11 +123,35 @@ RUN wget http://ftp.gnu.org/gnu/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2 \
  && popd \
  && rm -rf gcc*
 
+ARG VERSION
 ENV TAR="" \
     VERBOSE="" \
     LDFLAGS="" \
     GOARCH="amd64" \
-    GOOS="linux"
+    GOOS="linux" \
+    GOLANG_VERSION="${VERSION}"
+
+RUN case "${GOLANG_VERSION}" in \
+		1.10.4) goRelArch='linux-amd64'; goRelSha256='fa04efdb17a275a0c6e137f969a1c4eb878939e91e1da16060ce42f02c2ec5ec' ;; \
+		1.11.1) goRelArch='linux-amd64'; goRelSha256='2871270d8ff0c8c69f161aaae42f9f28739855ff5c5204752a8d92a1c9f63993' ;; \
+		*) \
+			echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
+	esac; \
+	\
+	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
+	wget -O go.tgz "$url"; \
+	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
+	tar -C /usr/local -xzf go.tgz; \
+	rm go.tgz; \
+	\
+	export PATH="/usr/local/go/bin:$PATH"; \
+	go version
+
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+WORKDIR $GOPATH
 
 COPY loader /loader
 
@@ -136,8 +161,6 @@ ENTRYPOINT [ "/loader" ]
 
 ARG BUILD_DATE
 ARG VCS_REF
-# no effect here
-#ARG blah
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://github.com/brimstone/docker-golang" \

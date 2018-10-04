@@ -1,5 +1,3 @@
-export IMAGE_NAME ?= brimstone/golang:latest
-
 .PHONY: image
 image:
 	hooks/build
@@ -8,6 +6,7 @@ image:
 clean:
 	-docker rmi golang-test-nocgo-onbuild
 	-docker rmi golang-test-cgo-onbuild
+	-rm -rf *.results
 
 .PHONY: test
 test:

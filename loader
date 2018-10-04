@@ -7,8 +7,8 @@ if [ "${GOOS}" = "linux" ]; then
 	if [ "${GOARCH}" = "arm" ]; then
 		export CC=arm-linux-gnueabihf-gcc-6
 		export CXX=arm-linux-gnueabihf-g++-6
-	#elif [ "${GOARCH}" = "amd64" ]; then
-		#export CC=/usr/local/musl/bin/musl-gcc
+	elif [ "${GOARCH}" = "amd64" ]; then
+		export CC=/usr/local/musl/bin/musl-gcc
 	fi
 elif [ "${GOOS}" = "windows" ]; then
 	LDFLAGS="-s -w"
