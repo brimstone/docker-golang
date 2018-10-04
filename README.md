@@ -3,9 +3,10 @@ golang
 
 This is a container to build golang static binaries with cgo musl for amd64, glibc for darwin, freebsd, and windows
 
-[![microbadger](microbadger-image)](microbadger-link "Get your own image badge on microbadger.com")
-[microbadger-image]: https://images.microbadger.com/badges/image/brimstone/golang.svg
-[microbadger-link]: https://microbadger.com/images/brimstone/golang
+[![microbadger][1]][2]
+
+[1]: https://images.microbadger.com/badges/image/brimstone/golang.svg
+[2]: https://microbadger.com/images/brimstone/golang
 
 
 Usage
