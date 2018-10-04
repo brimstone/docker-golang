@@ -6,6 +6,6 @@ IMAGE_NAME=brimstone/golang
 for v in $(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort); do
 	docker tag "$IMAGE_NAME:$v" "$IMAGE_NAME:${v%.*}"
 done
-latest="$(awk '/goRelArch=/{gsub(")","",$1);print $1}' Dockerfile | sort -r | head -n 1)"
+latest="$(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort -r | head -n 1)"
 docker tag "brimstone/golang:$latest" brimstone/golang:latest
 echo docker push "$IMAGE_NAME"
