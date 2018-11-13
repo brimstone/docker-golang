@@ -7,7 +7,7 @@ RUN dpkg --add-architecture i386 \
  && apt-get update \
  && apt install -y build-essential libssl-dev \
     libc6-dev-i386 libc6-dev:i386 lib32gcc-6-dev \
-    gcc-6-arm-linux-gnueabihf g++-6-arm-linux-gnueabihf \
+    gcc-6-arm-linux-gnueabi g++-6-arm-linux-gnueabi \
     mingw-w64 \
     clang \
     m4 file \
