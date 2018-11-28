@@ -3,8 +3,8 @@ set -u
 
 test-onbuild(){
 	cd "test-$cgo" || exit 1
-	docker build --build-arg "IMAGE_NAME=${IMAGE_NAME}" -t "golang-test-$cgo-onbuild" .
-	docker run --rm -i "golang-test-$cgo-onbuild" | grep '^it works$'
+	docker build --build-arg "IMAGE_NAME=${IMAGE_NAME}" -t "golang-test-$cgo-onbuild" . || exit 1
+	docker run --rm -i "golang-test-$cgo-onbuild" | grep '^it works$' || exit 1
 }
 
 test-tar(){

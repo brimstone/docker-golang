@@ -123,29 +123,11 @@ RUN wget http://ftp.gnu.org/gnu/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2 \
  && popd \
  && rm -rf gcc*
 
-ARG VERSION
 ENV TAR="" \
     VERBOSE="" \
     LDFLAGS="" \
     GOARCH="amd64" \
-    GOOS="linux" \
-    GOLANG_VERSION="${VERSION}"
-
-RUN case "${GOLANG_VERSION}" in \
-		1.10.5) goRelArch='linux-amd64'; goRelSha256='a035d9beda8341b645d3f45a1b620cf2d8fb0c5eb409be36b389c0fd384ecc3a' ;; \
-		1.11.2) goRelArch='linux-amd64'; goRelSha256='1dfe664fa3d8ad714bbd15a36627992effd150ddabd7523931f077b3926d736d' ;; \
-		*) \
-			echo >&2; echo >&2 "Version ${GOLANG_VERSION} is unknown. Build stopped."; echo >&2; exit 1;; \
-	esac; \
-	\
-	url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz"; \
-	wget -O go.tgz "$url"; \
-	echo "${goRelSha256} *go.tgz" | sha256sum -c -; \
-	tar -C /usr/local -xzf go.tgz; \
-	rm go.tgz; \
-	\
-	export PATH="/usr/local/go/bin:$PATH"; \
-	go version
+    GOOS="linux"
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
@@ -166,12 +148,3 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://github.com/brimstone/docker-golang" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.schema-version="1.0.0-rc1"
-
-ONBUILD ARG REPOSITORY
-ONBUILD ARG PACKAGE
-ONBUILD ARG CGO_ENABLED
-ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
-            PACKAGE=${PACKAGE}
-ONBUILD COPY . /go/src/${REPOSITORY}/
-ONBUILD WORKDIR /go/src/${REPOSITORY}/
-ONBUILD RUN /loader -o /app "${PACKAGE:-}"

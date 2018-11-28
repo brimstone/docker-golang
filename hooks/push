@@ -1,11 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-IMAGE_NAME=brimstone/golang
+IMAGE_NAME=${1:-brimstone/golang}
 
-for v in $(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort); do
+for f in Dockerfile.*; do
+	v="${f##Dockerfile.}"
 	docker tag "$IMAGE_NAME:$v" "$IMAGE_NAME:${v%.*}"
 done
-latest="$(awk '/goRelArch=/{gsub("\)","",$1);print $1}' Dockerfile | sort -r | head -n 1)"
-docker tag "brimstone/golang:$latest" brimstone/golang:latest
+latest="$(ls Dockerfile.* | sort -r | head -n 1)"
+latest="${latest##Dockerfile.}"
+docker tag "$IMAGE_NAME:$latest" "$IMAGE_NAME:latest"
+docker rmi "$IMAGE_NAME:temp" || true
 docker push "$IMAGE_NAME"
