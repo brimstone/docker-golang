@@ -1,45 +1,16 @@
 #!/bin/sh
 
 set -ue
-exportCC(){
-if [ "${GOOS}" = "linux" ]; then
-	LDFLAGS="-linkmode external -extldflags \"-static\" -s -w"
-	if [ "${GOARCH}" = "arm" ]; then
-		export CC=arm-linux-gnueabi-gcc-6
-		export CXX=arm-linux-gnueabi-g++-6
-	elif [ "${GOARCH}" = "amd64" ]; then
-		export CC=/usr/local/musl/bin/musl-gcc
-	fi
-elif [ "${GOOS}" = "windows" ]; then
-	LDFLAGS="-s -w"
-	if [ "${GOARCH}" = "386" ]; then
-		export CC=i686-w64-mingw32-gcc
-	elif [ "${GOARCH}" = "amd64" ]; then
-		export CC=x86_64-w64-mingw32-gcc
-	fi
-elif [ "${GOOS}" = "darwin" ]; then
-	if [ "${GOARCH}" = "386" ]; then
-		export CC=o32-clang
-		export CXX=o32-clang++
-	elif [ "${GOARCH}" = "amd64" ]; then
-		export CC=o64-clang
-		export CXX=o64-clang++
-	fi
-elif [ "${GOOS}" = "freebsd" ]; then
-	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
-	export CC=x86_64-pc-freebsd10-gcc
-	export CPP=x86_64-pc-freebsd10-gpp
-	LDFLAGS="-linkmode external -extldflags \"-static\" -s -w"
-fi
-# TODO ARM v6 and ARM 8
-}
 
-export PATH="$PATH:/usr/local/osx-ndk-x86/bin:/freebsd/bin"
+if [ "${1:-}" = "go" ]; then
+	shift
+	exec /bin/go "$@"
+fi
+
 LDFLAGS="${LDFLAGS:-}"
 CGO_CFLAGS="${CGO_CFLAGS:--g -O2}"
 CGO_LDFLAGS="${CGO_LDFLAGS:--g -O2}"
 CGO_CXXFLAGS="${CGO_LDFLAGS:--g -O2}"
-export CGO_ENABLED="${CGO_ENABLED:-0}"
 X=""
 if [ -n "$VERBOSE" ]; then
 	set -x
@@ -58,14 +29,8 @@ if [ -n "$TAR" ]; then
 	)
 fi
 
-if [ "$CGO_ENABLED" = 1 ]; then
-	exportCC
-else
-	LDFLAGS="-s -w"
-fi
 export CGO_CFLAGS
 export CGO_LDFLAGS="$CGO_LDFLAGS"
-
 
 (
 echo "CGO_ENABLED=$CGO_ENABLED"
@@ -75,10 +40,10 @@ echo "CGO_LDFLAGS=$CGO_LDFLAGS"
 echo "CGO_CXXFLAGS=$CGO_CXXFLAGS"
 echo "PWD=$PWD"
 echo "LDFLAGS=$LDFLAGS"
-echo Running /usr/local/go/bin/go build -v -ldflags "\"$LDFLAGS"\" $X "$@"
+echo Running /bin/go build -v $X "$@"
 ) >&2
 ret=0
-/usr/local/go/bin/go build -v -ldflags "$LDFLAGS" $X "$@" >&2 || ret=$?
+/bin/go build -v $X "$@" >&2 || ret=$?
 if [ $ret != 0 ]; then
 	echo "Exit: $ret" >&2
 	exit $ret

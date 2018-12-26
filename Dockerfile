@@ -123,19 +123,26 @@ RUN wget http://ftp.gnu.org/gnu/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2 \
  && popd \
  && rm -rf gcc*
 
-ENV TAR="" \
-    VERBOSE="" \
-    LDFLAGS="" \
+ENV CC=/bin/cc \
+	CGO_ENABLED=1 \
+	CXX=/bin/c++ \
+	GOPATH=/go \
+	HOME=/tmp \
+	PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/osx-ndk-x86/bin:/freebsd/bin:/usr/local/go/bin:/go/bin \
     GOARCH="amd64" \
-    GOOS="linux"
-
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
-
-RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
-WORKDIR $GOPATH
+    GOOS="linux" \
+    LDFLAGS="" \
+	TAR="" \
+    VERBOSE=""
 
 COPY loader /loader
+
+COPY cc /bin/cc
+
+RUN ln /bin/cc /bin/c++ \
+ && ln /bin/cc /bin/go \
+ && mkdir -p "$GOPATH/src" "$GOPATH/bin" \
+ && chmod -R 777 "$GOPATH"
 
 WORKDIR /go/src/app
 
