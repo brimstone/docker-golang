@@ -129,7 +129,6 @@ ENV CC=/bin/cc \
 	GOPATH=/go \
 	HOME=/tmp \
 	PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/osx-ndk-x86/bin:/freebsd/bin:/usr/local/go/bin:/go/bin \
-    GOARCH="amd64" \
     GOOS="linux" \
     LDFLAGS="" \
 	TAR="" \

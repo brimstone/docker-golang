@@ -10,15 +10,19 @@ RUN GOLANG_VERSION=1.11.4 \
  && export PATH="/usr/local/go/bin:$PATH" \
  && go version
 
+
+ONBUILD ARG GOARCH
+ONBUILD ENV GOARCH=$GOARCH
 ONBUILD ARG REPOSITORY
 ONBUILD WORKDIR /go/src/${REPOSITORY}/
+ONBUILD ARG CGO_ENABLED
+ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
+            GO111MODULE=on
 ONBUILD COPY go.mod .
 ONBUILD COPY go.sum .
 ONBUILD RUN go mod download
+ONBUILD RUN go list -f '{{if (and ( not .Main) (not .Indirect))}}{{.Path}}@{{.Version}}{{end}}' -m all | xargs -tn 1 go get -v || true
 ONBUILD COPY . .
 ONBUILD ARG PACKAGE
-ONBUILD ARG CGO_ENABLED
-ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
-            PACKAGE=${PACKAGE} \
-            GO111MODULE=on
+ONBUILD ENV PACKAGE=${PACKAGE}
 ONBUILD RUN /loader -o /app "${PACKAGE:-}"

@@ -33,13 +33,14 @@ export CGO_CFLAGS
 export CGO_LDFLAGS="$CGO_LDFLAGS"
 
 (
-echo "CGO_ENABLED=$CGO_ENABLED"
 echo "CC=${CC:-}"
 echo "CGO_CFLAGS=$CGO_CFLAGS"
-echo "CGO_LDFLAGS=$CGO_LDFLAGS"
 echo "CGO_CXXFLAGS=$CGO_CXXFLAGS"
-echo "PWD=$PWD"
+echo "CGO_ENABLED=$CGO_ENABLED"
+echo "CGO_LDFLAGS=$CGO_LDFLAGS"
+echo "GOARCH=$GOARCH"
 echo "LDFLAGS=$LDFLAGS"
+echo "PWD=$PWD"
 echo Running /bin/go build -v $X "$@"
 ) >&2
 ret=0
