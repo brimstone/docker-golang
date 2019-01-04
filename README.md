@@ -55,6 +55,7 @@ ONBUILD
 
 This image supports docker multistage builds. Simply use this as template for your Dockerfile:
 ```
+ARG REPOSITORY=github.com/brimstone/example
 FROM brimstone/golang as builder
 
 FROM scratch
