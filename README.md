@@ -42,6 +42,7 @@ For when there's just source files in a diretory:
 tar c . \
 | docker run --rm -i -e TAR=1 brimstone/golang -o main \
 | tar -x ./main
+```
 
 
 Environment Variables
