@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ue
 
+GOOS=${GOOS:-linux}
+GOARCH=${GOARCH:-amd64}
+
 # If we're not `go build`, abort
 if [ "$0" = "/bin/go" ] && [ "$1" != "build" ]; then
 	exec /usr/local/go/bin/go "$@"
