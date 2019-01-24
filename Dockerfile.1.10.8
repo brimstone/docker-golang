@@ -1,8 +1,8 @@
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME}:temp
 
-RUN GOLANG_VERSION=1.11.4 \
- && DIGEST='fb26c30e6a04ad937bbc657a1b5bba92f80096af1e8ee6da6430c045a8db3a5b' \
+RUN GOLANG_VERSION=1.10.8 \
+ && DIGEST='d8626fb6f9a3ab397d88c483b576be41fa81eefcec2fd18562c87626dbb3c39e' \
  && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
  && echo "${DIGEST} *go.tgz" | sha256sum -c - \
  &&	tar -C /usr/local -xzf go.tgz \
@@ -10,19 +10,13 @@ RUN GOLANG_VERSION=1.11.4 \
  && export PATH="/usr/local/go/bin:$PATH" \
  && go version
 
-
 ONBUILD ARG GOARCH
 ONBUILD ENV GOARCH=$GOARCH
 ONBUILD ARG REPOSITORY
 ONBUILD WORKDIR /go/src/${REPOSITORY}/
-ONBUILD ARG CGO_ENABLED
-ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
-            GO111MODULE=on
-ONBUILD COPY go.mod .
-ONBUILD COPY go.sum .
-ONBUILD RUN go mod download
-ONBUILD RUN go list -f '{{if (and ( not .Main) (not .Indirect))}}{{.Path}}@{{.Version}}{{end}}' -m all | xargs -tn 1 go get -v || true
 ONBUILD COPY . .
 ONBUILD ARG PACKAGE
-ONBUILD ENV PACKAGE=${PACKAGE}
+ONBUILD ARG CGO_ENABLED
+ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
+            PACKAGE=${PACKAGE}
 ONBUILD RUN /loader -o /app "${PACKAGE:-}"
