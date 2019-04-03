@@ -45,8 +45,8 @@ RUN wget https://github.com/karalabe/xgo/blob/master/docker/base/patch.tar.xz?ra
 
 # Setup Freebsd, stolen from https://github.com/sandvine/freebsd-cross-build
 RUN mkdir -p /freebsd/x86_64-pc-freebsd10 && cd /freebsd \
- && wget http://ftp4.us.freebsd.org/pub/FreeBSD/releases/amd64/10.1-RELEASE/base.txz \
- && wget http://ftp4.us.freebsd.org/pub/FreeBSD/releases/amd64/10.1-RELEASE/lib32.txz \
+ && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64/amd64/10.1-RELEASE/base.txz \
+ && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64/amd64/10.1-RELEASE/lib32.txz \
  && tar -xf base.txz ./usr/lib \
  && tar -xf base.txz ./usr/include \
  && tar -xf base.txz ./lib \
