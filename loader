@@ -2,9 +2,8 @@
 
 set -ue
 
-if [ "${1:-}" = "go" ]; then
-	shift
-	exec /bin/go "$@"
+if [ -n "${1:-}" ]; then
+	exec "$@"
 fi
 
 LDFLAGS="${LDFLAGS:-}"
