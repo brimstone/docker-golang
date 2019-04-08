@@ -16,9 +16,10 @@ test-tar(){
 	if [ "$os" = "windows" ]; then
 		EXT=".exe"
 	fi
-	o="$(tar -cC "test-$cgo" . | docker run --rm -i \
+	tar -cC "test-$cgo" . | docker run --rm -i \
 		-e TAR=1 -e VERBOSE=1 -e "GOOS=$os" -e "GOARCH=$arch" -e "CGO_ENABLED=$CGO" \
-		"${IMAGE_NAME}" | tar -x "./app${EXT}" -O | file -)"
+		"${IMAGE_NAME}" | tar -x "./app${EXT}" -O > output
+	o="$(file output)"
 	echo "$o"
 	grep -q -E "$1" <<< "$o"
 }
@@ -36,7 +37,7 @@ display-results(){
 		if [ "$ret" = 0 ]; then
 			sym="✓ "
 		fi
-		printf "%s\\t%s\\t%s\\t%s\\t%d\\n" "$sym" "$os" "$arch" "$cgo"
+		printf "%s\\t%s\\t%s\\t%s\\t%s\\n" "$sym" "$os" "$arch" "$cgo" "$sd"
 		echo "$o" > "${os}_${arch}_${cgo}.results"
 	fi
 }
@@ -69,10 +70,24 @@ for output in $(echo "${!outputs[@]}" | tr ' ' '\n' | sort); do
 	for cgo in cgo nocgo; do
 		if [ "$os" = "onbuild" ]; then
 			o="$(test-onbuild 2>&1)"
+			ret=$?
+			sd="n/a"
 		else
+			rm -f output
 			o="$(test-tar "${outputs[$output]}" 2>&1)"
+			ret=$?
+			sd="n/a"
+			if [ $ret = 0 ]; then
+				s1="$(sha1sum "output")"
+				test-tar "${outputs[$output]}" >/dev/null 2>/dev/null
+				s2="$(sha1sum "output")"
+				sd="Non-reproducable"
+				if [ "$s1" = "$s2" ]; then
+					sd="Reproducable"
+				fi
+			fi
 		fi
-		ret=$?
 		display-results
 	done
 done
+rm -f output
