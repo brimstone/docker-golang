@@ -59,6 +59,8 @@ outputs=(
 
 IMAGE_NAME="${IMAGE_NAME:-brimstone/golang:latest}"
 
+echo "IMAGE_NAME: ${IMAGE_NAME}"
+
 rm -f ./*.results
 for output in $(echo "${!outputs[@]}" | tr ' ' '\n' | sort); do
 	if [ -n "${1:-}" ]; then

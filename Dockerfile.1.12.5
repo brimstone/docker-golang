@@ -25,4 +25,4 @@ ONBUILD RUN go list -f '{{if (and ( not .Main) (not .Indirect))}}{{.Path}}@{{.Ve
 ONBUILD COPY . .
 ONBUILD ARG PACKAGE
 ONBUILD ENV PACKAGE=${PACKAGE}
-ONBUILD RUN /loader -o /app "${PACKAGE:-}"
+ONBUILD RUN /loader go build -v -o /app "${PACKAGE:-}"
