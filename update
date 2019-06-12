@@ -13,6 +13,7 @@ check(){
 		echo "sha: [$sha]"
 		git mv "Dockerfile.$version" "Dockerfile.$nextversion"
 		sed -i "s/GOLANG_VERSION=.[0-9.]*/GOLANG_VERSION=$nextversion/;s/DIGEST='.*'/DIGEST='$sha'/" Dockerfile.$nextversion
+		git add "Dockerfile.$nextversion"
 	fi
 }
 
