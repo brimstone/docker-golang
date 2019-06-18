@@ -33,6 +33,7 @@ ENV OSX_NDK_X86 /usr/local/osx-ndk-x86
 RUN OSX_SDK_PATH=https://s3.dockerproject.org/darwin/v2/$OSX_SDK.tar.xz \
  && wget $OSX_SDK_PATH \
  && git clone https://github.com/tpoechtrager/osxcross.git /osxcross \
+ && (cd /osxcross && git checkout 9498bfdc621716959e575bd6779c853a03cf5f8d && git reset --hard ) \
  && mv `basename $OSX_SDK_PATH` /osxcross/tarballs/ \
  && sed -i -e 's|-march=native||g' /osxcross/build_clang.sh /osxcross/wrapper/build.sh \
  && UNATTENDED=yes OSX_VERSION_MIN=10.6 /osxcross/build.sh \
