@@ -8,6 +8,7 @@ RUN dpkg --add-architecture i386 \
  && apt install -y build-essential libssl-dev \
     libc6-dev-i386 libc6-dev:i386 lib32gcc-6-dev \
     gcc-6-arm-linux-gnueabi g++-6-arm-linux-gnueabi \
+    gcc-6-aarch64-linux-gnu g++-6-aarch64-linux-gnu \
     mingw-w64 \
     clang \
     m4 file \
@@ -20,9 +21,20 @@ RUN wget http://www.musl-libc.org/releases/musl-latest.tar.gz \
  && tar -zxvf musl-latest.tar.gz \
  && rm musl-latest.tar.gz \
  && cd musl* \
- && ./configure \
+ && ./configure --prefix=/usr/local/musl-x86_64 -exec-prefix=/usr/local/musl-x86_64 \
  && make -j$(nproc) \
  && make install \
+ && make clean \
+ && export CC=arm-linux-gnueabi-gcc-6 \
+ && ./configure --prefix=/usr/local/musl-arm -exec-prefix=/usr/local/musl-arm \
+ && make -j$(nproc) \
+ && make install \
+ && make clean \
+ && export CC=aarch64-linux-gnu-gcc-6 \
+ && ./configure --prefix=/usr/local/musl-aarch64 -exec-prefix=/usr/local/musl-aarch64 \
+ && make -j$(nproc) \
+ && make install \
+ && make clean \
  && cd .. \
  && rm -rf musl*
 

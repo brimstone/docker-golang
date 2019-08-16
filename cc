@@ -12,11 +12,19 @@ fi
 case "$GOOS-$GOARCH-$(basename "$0")" in
 ## Linux
 linux-arm-cc)
-	export CC=arm-linux-gnueabi-gcc-6
+	export CC=/usr/local/musl-arm/bin/musl-gcc
 	exec "$CC" "$@"
 ;;
 linux-arm-c++)
 	export CXX=arm-linux-gnueabi-g++-6
+	exec "$CXX" "$@"
+;;
+linux-arm64-cc)
+	export CC=/usr/local/musl-aarch64/bin/musl-gcc
+	exec "$CC" "$@"
+;;
+linux-arm64-c++)
+	export CXX=aarch64-linux-gnu-g++-6
 	exec "$CXX" "$@"
 ;;
 linux-386-cc)
@@ -28,7 +36,7 @@ linux-386-c++)
 	exec "$CC" "$@"
 ;;
 linux-amd64-cc)
-	export CC=/usr/local/musl/bin/musl-gcc
+	export CC=/usr/local/musl-x86_64/bin/musl-gcc
 	exec "$CC" "$@"
 ;;
 linux-amd64-c++)
@@ -94,7 +102,7 @@ freebsd-*-go)
 	LDFLAGS="${LDFLAGS:-} -linkmode external -extldflags \"-static\""
 ;;
 *)
-	echo "Why does GOOS=${GOOS} GOARCH=${GOARCH} 0=$0?"
+	echo "Why does GOOS=${GOOS} GOARCH=${GOARCH} 0=$0?" >&2
 	exit 1
 ;;
 esac
