@@ -27,5 +27,5 @@ patch="${version##*.}"
 echo "Current major: $major minor: $minor patch: $patch"
 
 check "$major.$minor.$(( $patch+1 ))"
-check "$major.$(( $minor+1 )).0"
-check "$(( $major+1 )).0.0"
+check "$major.$(( $minor+1 ))"
+check "$(( $major+1 ))"
