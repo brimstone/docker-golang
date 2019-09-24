@@ -18,7 +18,7 @@ test-tar(){
 	fi
 	tar -cC "test-$cgo" . | docker run --rm -i \
 		-e TAR=1 -e VERBOSE=1 -e "GOOS=$os" -e "GOARCH=$arch" -e "CGO_ENABLED=$CGO" \
-		"${IMAGE_NAME}" | tar -x "./app${EXT}" -O > output
+		"${IMAGE_NAME}" | tar -x "./test-${cgo}${EXT}" -O > output
 	o="$(file output)"
 	echo "$o"
 	grep -q -E "$1" <<< "$o"
