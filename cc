@@ -4,8 +4,10 @@ set -ue
 GOOS=${GOOS:-linux}
 GOARCH=${GOARCH:-amd64}
 
-# If we're not `go build`, abort
-if [ "$0" = "/bin/go" ] && [ "$1" != "build" ]; then
+# If we're not `go build` or `go install`, abort
+if [ "$0" = "/bin/go" ] \
+	&& [ "$1" != "build" ] \
+	&& [ "$1" != "install" ]; then
 	exec /usr/local/go/bin/go "$@"
 fi
 
@@ -108,7 +110,7 @@ freebsd-*-go)
 esac
 
 # $0 must be go, or we should have gotten this far
-# The first arg should be 'build', or we wouldn't have gotten this far
+# The first arg should be 'build' or 'install', or we wouldn't have gotten this far
 shift
 declare -a arr=()
 set_flags=0
@@ -117,6 +119,10 @@ while (( $# )); do
 		shift
 		arr[${#arr[@]}]="-ldflags"
 		arr[${#arr[@]}]="$LDFLAGS $1"
+		set_flags=1
+	elif [ "${1:0:9}" = "-ldflags=" ]; then
+		arr[${#arr[@]}]="-ldflags"
+		arr[${#arr[@]}]="$LDFLAGS ${1:9}"
 		set_flags=1
 	else
 		arr[${#arr[@]}]=$1

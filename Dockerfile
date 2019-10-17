@@ -151,8 +151,8 @@ COPY loader /loader
 
 COPY cc /bin/cc
 
-RUN ln /bin/cc /bin/c++ \
- && ln /bin/cc /bin/go \
+RUN ln -s /bin/cc /bin/c++ \
+ && ln -s /bin/cc /bin/go \
  && mkdir -p "$GOPATH/src" "$GOPATH/bin" \
  && chmod -R 777 "$GOPATH"
 

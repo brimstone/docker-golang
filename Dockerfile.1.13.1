@@ -7,7 +7,7 @@ RUN GOLANG_VERSION=1.13.1 \
  && echo "${DIGEST} *go.tgz" | sha256sum -c - \
  &&	tar -C /usr/local -xzf go.tgz \
  && rm go.tgz \
- && export PATH="/usr/local/go/bin:$PATH" \
+ && echo PATH: $PATH \
  && go version
 
 
