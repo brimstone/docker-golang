@@ -10,6 +10,23 @@ RUN GOLANG_VERSION=1.13.1 \
  && echo PATH: $PATH \
  && go version
 
+# Install some extra tools
+RUN mkdir /tmp/tools \
+ && : "Install goreleaser" \
+ && cd /tmp/tools \
+ && git clone https://github.com/goreleaser/goreleaser \
+ && cd goreleaser \
+ && go build -o /go/bin/goreleaser -v \
+ && : "Install golangci-lint" \
+ && cd /tmp/tools \
+ && git clone https://github.com/golangci/golangci-lint -b v1.21.0 \
+ && cd golangci-lint \
+ && go build -o /go/bin/golangci-lint -v ./cmd/golangci-lint \
+ && : "Clean up the layer" \
+ && cd / \
+ && rm -rf /tmp/tools \
+ && rm -rf /tmp/.cache \
+ && rm -rf /go/pkg
 
 ONBUILD ARG GOARCH
 ONBUILD ENV GOARCH=$GOARCH
