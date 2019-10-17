@@ -22,7 +22,7 @@ version="${version#Dockerfile.}"
 major="${version%%.*}"
 minor="${version#*.}"
 minor="${minor%.*}"
-patch="${version#*.}"
+patch="${version##*.}"
 if [ "$patch" = "${version#*.}" ]; then
 	patch="0"
 else
