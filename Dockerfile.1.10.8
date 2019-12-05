@@ -1,5 +1,5 @@
 ARG IMAGE_NAME
-FROM ${IMAGE_NAME}:temp
+FROM ${IMAGE_NAME}:temp as image
 
 RUN GOLANG_VERSION=1.10.8 \
  && DIGEST='d8626fb6f9a3ab397d88c483b576be41fa81eefcec2fd18562c87626dbb3c39e' \
@@ -9,6 +9,8 @@ RUN GOLANG_VERSION=1.10.8 \
  && rm go.tgz \
  && export PATH="/usr/local/go/bin:$PATH" \
  && go version
+
+FROM image as onbuild
 
 ONBUILD ARG GOARCH
 ONBUILD ENV GOARCH=$GOARCH

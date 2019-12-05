@@ -1,5 +1,5 @@
 ARG IMAGE_NAME
-FROM ${IMAGE_NAME}:temp
+FROM ${IMAGE_NAME}:temp as image
 
 RUN GOLANG_VERSION=1.13.5 \
  && DIGEST='512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569' \
@@ -27,6 +27,8 @@ RUN mkdir /tmp/tools \
  && rm -rf /tmp/tools \
  && rm -rf /tmp/.cache \
  && rm -rf /go/pkg
+
+FROM image as onbuild
 
 ONBUILD ARG GOARCH
 ONBUILD ENV GOARCH=$GOARCH

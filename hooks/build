@@ -11,8 +11,15 @@ for f in Dockerfile.*; do
 	v="${f##Dockerfile.}"
 	docker build -f "$f" \
 			--build-arg IMAGE_NAME="$IMAGE_NAME" \
-			-t "$IMAGE_NAME:$v" .
+			-t "$IMAGE_NAME:$v" \
+			--target image \
+			.
 	docker tag "$IMAGE_NAME:$v" "$IMAGE_NAME:${v%.*}"
+	docker build -f "$f" \
+			--build-arg IMAGE_NAME="$IMAGE_NAME" \
+			-t "$IMAGE_NAME:$v-onbuild" \
+			--target onbuild \
+			.
 done
 
 docker rmi "$IMAGE_NAME:temp" || true
@@ -20,3 +27,4 @@ docker rmi "$IMAGE_NAME:temp" || true
 latest="$(ls Dockerfile.* | sort -r | head -n 1)"
 latest="${latest##Dockerfile.}"
 docker tag "$IMAGE_NAME:$latest" "$IMAGE_NAME:latest"
+docker tag "$IMAGE_NAME:$latest-onbuild" "$IMAGE_NAME:latest-onbuild"
