@@ -10,6 +10,15 @@ This is a container to build golang static binaries with cgo musl for amd64, gli
 [3]: https://img.shields.io/docker/automated/brimstone/golang.svg
 [4]: https://hub.docker.com/r/brimstone/golang
 
+Note about go 1.14
+------------------
+On some kernels, mlock is weird. If you run into the following error, try adding `--ulimit memlock=131072` or larger to your `docker run` statement.
+```
+runtime: mlock of signal stack failed: 12
+runtime: increase the mlock limit (ulimit -l) or
+runtime: update your kernel to 5.3.15+, 5.4.2+, or 5.5+
+fatal error: mlock failed
+```
 
 Usage
 -----

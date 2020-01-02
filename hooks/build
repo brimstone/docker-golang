@@ -6,16 +6,21 @@ IMAGE_NAME=${1:-brimstone/golang}
 docker build --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
 			--build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
 			-t "$IMAGE_NAME:temp" .
+VERSIONS=${VERSIONS:-Dockerfile.*}
 
-for f in Dockerfile.*; do
+mlock=$(( 2 ** 17 ))
+
+for f in $VERSIONS; do
 	v="${f##Dockerfile.}"
 	docker build -f "$f" \
+			--ulimit memlock=$mlock \
 			--build-arg IMAGE_NAME="$IMAGE_NAME" \
 			-t "$IMAGE_NAME:$v" \
 			--target image \
 			.
 	docker tag "$IMAGE_NAME:$v" "$IMAGE_NAME:${v%.*}"
 	docker build -f "$f" \
+			--ulimit memlock=$mlock \
 			--build-arg IMAGE_NAME="$IMAGE_NAME" \
 			-t "$IMAGE_NAME:$v-onbuild" \
 			--target onbuild \
