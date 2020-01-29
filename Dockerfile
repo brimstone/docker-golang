@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 SHELL ["/bin/bash", "-uec"]
 
@@ -6,9 +6,9 @@ SHELL ["/bin/bash", "-uec"]
 RUN dpkg --add-architecture i386 \
  && apt-get update \
  && apt install -y build-essential libssl-dev \
-    libc6-dev-i386 libc6-dev:i386 lib32gcc-6-dev \
-    gcc-6-arm-linux-gnueabi g++-6-arm-linux-gnueabi \
-    gcc-6-aarch64-linux-gnu g++-6-aarch64-linux-gnu \
+    libc6-dev-i386 libc6-dev:i386 lib32gcc-8-dev \
+    gcc-8-arm-linux-gnueabi g++-8-arm-linux-gnueabi \
+    gcc-8-aarch64-linux-gnu g++-8-aarch64-linux-gnu \
     mingw-w64 \
     clang \
     m4 file \
@@ -25,12 +25,12 @@ RUN wget http://www.musl-libc.org/releases/musl-latest.tar.gz \
  && make -j$(nproc) \
  && make install \
  && make clean \
- && export CC=arm-linux-gnueabi-gcc-6 \
+ && export CC=arm-linux-gnueabi-gcc-8 \
  && ./configure --prefix=/usr/local/musl-arm -exec-prefix=/usr/local/musl-arm \
  && make -j$(nproc) \
  && make install \
  && make clean \
- && export CC=aarch64-linux-gnu-gcc-6 \
+ && export CC=aarch64-linux-gnu-gcc-8 \
  && ./configure --prefix=/usr/local/musl-aarch64 -exec-prefix=/usr/local/musl-aarch64 \
  && make -j$(nproc) \
  && make install \
@@ -57,21 +57,21 @@ RUN wget https://github.com/karalabe/xgo/blob/master/docker/base/patch.tar.xz?ra
  && rm patch.tar.xz
 
 # Setup Freebsd, stolen from https://github.com/sandvine/freebsd-cross-build
-RUN mkdir -p /freebsd/x86_64-pc-freebsd10 && cd /freebsd \
- && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64/amd64/10.1-RELEASE/base.txz \
- && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/amd64/amd64/10.1-RELEASE/lib32.txz \
+RUN mkdir -p /freebsd/x86_64-pc-freebsd12 && cd /freebsd \
+ && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD/releases/amd64/amd64/12.1-RELEASE/base.txz \
+ && wget ftp://ftp-archive.freebsd.org/pub/FreeBSD/releases/amd64/amd64/12.1-RELEASE/lib32.txz \
  && tar -xf base.txz ./usr/lib \
  && tar -xf base.txz ./usr/include \
  && tar -xf base.txz ./lib \
  && rm base.txz \
  && tar -xf lib32.txz ./usr/lib32 \
  && rm lib32.txz \
- && mv usr/include x86_64-pc-freebsd10 \
- && mv usr/lib x86_64-pc-freebsd10 \
- && mv lib/* x86_64-pc-freebsd10/lib/ \
- && mv usr/lib32 x86_64-pc-freebsd10/ \
+ && mv usr/include x86_64-pc-freebsd12 \
+ && mv usr/lib x86_64-pc-freebsd12 \
+ && mv lib/* x86_64-pc-freebsd12/lib/ \
+ && mv usr/lib32 x86_64-pc-freebsd12/ \
  && rmdir lib usr \
- && cd x86_64-pc-freebsd10/lib \
+ && cd x86_64-pc-freebsd12/lib \
  && ln -sf libc.so.7 libc.so \
  && ln -sf libc++.so.1 libc++.so \
  && cd ../lib32 \
@@ -86,7 +86,7 @@ RUN wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.gz \
  && tar -xf binutils*.tar.gz \
  && rm binutils*.tar.gz \
  && pushd binutils* \
- && ./configure --enable-libssp --enable-ld --target=x86_64-pc-freebsd10 --prefix=/freebsd \
+ && ./configure --enable-libssp --enable-ld --target=x86_64-pc-freebsd12 --prefix=/freebsd \
  && make -j$(nproc) \
  && make install \
  && popd \
@@ -96,7 +96,7 @@ RUN wget http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz \
  && rm gmp*.tar.xz \
  && pushd gmp* \
  && ./configure --prefix=/freebsd --enable-shared --enable-static --enable-fft \
-    --enable-cxx --host=x86_64-pc-freebsd10 \
+    --enable-cxx --host=x86_64-pc-freebsd12 \
  && make -j$(nproc) \
  && make install \
  && popd \
@@ -106,7 +106,7 @@ RUN wget http://ftp.gnu.org/gnu/mpfr/mpfr-3.1.3.tar.xz \
  && rm mpfr*.tar.xz \
  && pushd mpfr* \
  && ./configure --prefix=/freebsd --with-gnu-ld --enable-static --enable-shared \
-    --with-gmp=/freebsd --host=x86_64-pc-freebsd10 \
+    --with-gmp=/freebsd --host=x86_64-pc-freebsd12 \
  && make -j$(nproc) \
  && make install \
  && popd \
@@ -116,20 +116,20 @@ RUN wget http://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz \
  && rm mpc*.tar.gz \
  && pushd mpc* \
  && ./configure --prefix=/freebsd --with-gnu-ld --enable-static --enable-shared \
-    --with-gmp=/freebsd --with-mpfr=/freebsd --host=x86_64-pc-freebsd10 \
+    --with-gmp=/freebsd --with-mpfr=/freebsd --host=x86_64-pc-freebsd12 \
  && make -j$(nproc) \
  && make install \
  && popd \
  && rm -rf mpc*
-RUN wget http://ftp.gnu.org/gnu/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2 \
- && tar -xf gcc*.tar.bz2 \
- && rm gcc*.tar.bz2 \
+RUN wget https://ftp.gnu.org/gnu/gcc/gcc-8.1.0/gcc-8.1.0.tar.gz \
+ && tar -xf gcc*.tar.gz \
+ && rm gcc*.tar.gz \
  && pushd gcc* \
  && mkdir build \
  && cd build \
  && ../configure --without-headers --with-gnu-as --with-gnu-ld --disable-nls \
     --enable-languages=c,c++ --enable-libssp --enable-ld --disable-libitm \
-    --disable-libquadmath --target=x86_64-pc-freebsd10 --prefix=/freebsd \
+    --disable-libquadmath --target=x86_64-pc-freebsd12 --prefix=/freebsd \
     --with-gmp=/freebsd --with-mpc=/freebsd --with-mpfr=/freebsd --disable-libgomp \
  && LD_LIBRARY_PATH=/freebsd/lib make -j$(nproc) \
  && make install \

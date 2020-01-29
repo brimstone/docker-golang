@@ -18,7 +18,7 @@ linux-arm-cc)
 	exec "$CC" "$@"
 ;;
 linux-arm-c++)
-	export CXX=arm-linux-gnueabi-g++-6
+	export CXX=arm-linux-gnueabi-g++-8
 	exec "$CXX" "$@"
 ;;
 linux-arm64-cc)
@@ -26,7 +26,7 @@ linux-arm64-cc)
 	exec "$CC" "$@"
 ;;
 linux-arm64-c++)
-	export CXX=aarch64-linux-gnu-g++-6
+	export CXX=aarch64-linux-gnu-g++-8
 	exec "$CXX" "$@"
 ;;
 linux-386-cc)
@@ -81,23 +81,23 @@ darwin-*-go)
 ## Freebsd
 freebsd-386-cc)
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
-	export CC=i386-pc-freebsd10-gcc
+	export CC=i386-pc-freebsd12-gcc
 	exec "${CC}" "$@"
 ;;
 freebsd-386-c++)
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
-	export CXX=i386-pc-freebsd10-gpp
+	export CXX=i386-pc-freebsd12-gpp
 	exec "${CXX}" "$@"
 ;;
 freebsd-amd64-cc)
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
-	export CC=x86_64-pc-freebsd10-gcc
+	export CC=x86_64-pc-freebsd12-gcc
 	exec "${CC}" "$@"
 ;;
 freebsd-amd64-c++)
 	export LD_LIBRARY_PATH=/freebsd/lib:/freebsd/lib32
 	# FINDME should this be CPP?
-	export CXX=x86_64-pc-freebsd10-gpp
+	export CXX=x86_64-pc-freebsd12-gpp
 	exec "${CXX}" "$@"
 ;;
 freebsd-*-go)
