@@ -1,8 +1,8 @@
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME}:temp as image
 
-RUN GOLANG_VERSION=1.14.2 \
- && DIGEST='6272d6e940ecb71ea5636ddb5fab3933e087c1356173c61f4a803895e947ebb3' \
+RUN GOLANG_VERSION=1.14.3 \
+ && DIGEST='1c39eac4ae95781b066c144c58e45d6859652247f7515f0d2cba7be7d57d2226' \
  && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
  && echo "${DIGEST} *go.tgz" | sha256sum -c - \
  &&	tar -C /usr/local -xzf go.tgz \
@@ -19,7 +19,7 @@ RUN mkdir /tmp/tools \
  && go build -o /go/bin/goreleaser -v \
  && : "Install golangci-lint" \
  && cd /tmp/tools \
- && git clone https://github.com/golangci/golangci-lint -b v1.24.0 \
+ && git clone https://github.com/golangci/golangci-lint -b v1.27.0 \
  && cd golangci-lint \
  && go build -o /go/bin/golangci-lint -v ./cmd/golangci-lint \
  && : "Clean up the layer" \
