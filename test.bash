@@ -58,7 +58,7 @@ outputs=(
 	[onbuild_amd64]=""
 )
 
-IMAGE_NAME="${IMAGE_NAME:-brimstone/golang:latest}"
+IMAGE_NAME="${IMAGE_NAME:-storjlabs/golang:latest}"
 
 echo "IMAGE_NAME: ${IMAGE_NAME}"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-IMAGE_NAME=${1:-brimstone/golang}
+IMAGE_NAME=${1:-storjlabs/golang}
 
 docker push "$IMAGE_NAME"

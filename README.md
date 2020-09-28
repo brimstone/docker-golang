@@ -5,10 +5,10 @@ This is a container to build golang static binaries with cgo musl for amd64, gli
 
 [![microbadger][1]][2] [![docker hub][3]][4]
 
-[1]: https://images.microbadger.com/badges/image/brimstone/golang.svg
-[2]: https://microbadger.com/images/brimstone/golang
-[3]: https://img.shields.io/docker/automated/brimstone/golang.svg
-[4]: https://hub.docker.com/r/brimstone/golang
+[1]: https://images.microbadger.com/badges/image/storjlabs/golang.svg
+[2]: https://microbadger.com/images/storjlabs/golang
+[3]: https://img.shields.io/docker/automated/storjlabs/golang.svg
+[4]: https://hub.docker.com/r/storjlabs/golang
 
 
 Usage
@@ -24,7 +24,7 @@ git clone https://github.com/user/repo.git src/github.com/user/repo
 Then build!
 
 ```bash
-docker run --rm -it -v "$PWD:/go" -u "$UID:$GID" brimstone/golang github.com/user/repo
+docker run --rm -it -v "$PWD:/go" -u "$UID:$GID" storjlabs/golang github.com/user/repo
 ```
 
 Alternate build
@@ -33,14 +33,14 @@ Alternate build
 For when another repo is included in a `src` directory, for instance, a submodule:
 ```bash
 tar c src \
-| docker run --rm -i -e TAR=1 brimstone/golang github.com/user/repo \
+| docker run --rm -i -e TAR=1 storjlabs/golang github.com/user/repo \
 | tar -x ./main
 ```
 
 For when there's just source files in a diretory:
 ```bash
 tar c . \
-| docker run --rm -i -e TAR=1 brimstone/golang -o main \
+| docker run --rm -i -e TAR=1 storjlabs/golang -o main \
 | tar -x ./main
 ```
 
@@ -55,8 +55,8 @@ ONBUILD
 
 This image supports docker multistage builds. Simply use this as template for your Dockerfile:
 ```
-ARG REPOSITORY=github.com/brimstone/example
-FROM brimstone/golang as builder
+ARG REPOSITORY=github.com/storjlabs/example
+FROM storjlabs/golang as builder
 
 FROM scratch
 ENV ADDRESS=
