@@ -1,8 +1,8 @@
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME}:temp as image
 
-RUN GOLANG_VERSION=1.15.3 \
- && DIGEST='010a88df924a81ec21b293b5da8f9b11c176d27c0ee3962dc1738d2352d3c02d' \
+RUN GOLANG_VERSION=1.15.4 \
+ && DIGEST='eb61005f0b932c93b424a3a4eaa67d72196c79129d9a3ea8578047683e2c80d5' \
  && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
  && echo "${DIGEST} *go.tgz" | sha256sum -c - \
  &&	tar -C /usr/local -xzf go.tgz \
