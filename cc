@@ -103,8 +103,11 @@ freebsd-amd64-c++)
 freebsd-*-go)
 	LDFLAGS="${LDFLAGS:-} -linkmode external -extldflags \"-static\""
 ;;
+js-wasm-go)
+	exec /usr/local/go/bin/go "$@"
+;;
 *)
-	echo "Why does GOOS=${GOOS} GOARCH=${GOARCH} 0=$0?" >&2
+	echo "There is not compiler for GOOS=${GOOS} GOARCH=${GOARCH} in the cc file!" >&2
 	exit 1
 ;;
 esac
