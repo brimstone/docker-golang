@@ -13,6 +13,7 @@ RUN dpkg --add-architecture i386 \
     clang \
     m4 file \
     wget git \
+    brotli \
  && apt clean \
  && rm -rf /var/lib/apt/lists
 
