@@ -50,6 +50,7 @@ outputs=(
 	[linux_arm64]="ELF.*ARM.*aarch64.*static.*, stripped"
 	[darwin_386]="Mach-O i386"
 	[darwin_amd64]="Mach-O 64"
+	[darwin_arm64]="Mach-O 64"
 	[windows_386]="PE32[^+]"
 	[windows_amd64]="PE32\\+"
 	[freebsd_amd64]="x86-64.*FreeBSD.*static.*, stripped"
