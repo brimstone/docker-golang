@@ -1,32 +1,14 @@
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME}:temp as image
 
-RUN GOLANG_VERSION=1.16 \
- && DIGEST='013a489ebb3e24ef3d915abe5b94c3286c070dfe0818d5bca8108f1d6e8440d2' \
+RUN GOLANG_VERSION=1.17 \
+ && DIGEST='6bf89fc4f5ad763871cf7eac80a2d594492de7a818303283f1366a7f6a30372d' \
  && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
  && echo "${DIGEST} *go.tgz" | sha256sum -c - \
  &&	tar -C /usr/local -xzf go.tgz \
  && rm go.tgz \
  && echo PATH: $PATH \
  && go version
-
-# Install some extra tools
-RUN mkdir /tmp/tools \
- && : "Install goreleaser" \
- && cd /tmp/tools \
- && git clone https://github.com/goreleaser/goreleaser \
- && cd goreleaser \
- && go build -o /go/bin/goreleaser -v \
- && : "Install golangci-lint" \
- && cd /tmp/tools \
- && git clone https://github.com/golangci/golangci-lint -b v1.37.0 \
- && cd golangci-lint \
- && go build -o /go/bin/golangci-lint -v ./cmd/golangci-lint \
- && : "Clean up the layer" \
- && cd / \
- && rm -rf /tmp/tools \
- && rm -rf /tmp/.cache \
- && rm -rf /go/pkg
 
 FROM image as onbuild
 

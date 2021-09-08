@@ -32,8 +32,3 @@ echo "Current major: $major minor: $minor patch: $patch"
 check "$major.$minor.$(( $patch+1 ))"
 check "$major.$(( $minor+1 ))"
 check "$(( $major+1 ))"
-
-[ -t 1 ] && echo "Checking for updated golangci-lint at https://github.com/repos/golangci/golangci-lint"
-golangci="$(curl https://api.github.com/repos/golangci/golangci-lint/releases -s | jq -r '.[].tag_name' | sort -rV | head -n 1)"
-[ -t 1 ] && echo "Latest version of golangci-lint is $golangci"
-sed -E -i'' "/golangci-lint/s/v[0-9.]+ /$golangci /" Dockerfile*

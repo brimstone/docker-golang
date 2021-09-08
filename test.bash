@@ -48,13 +48,11 @@ outputs=(
 	[linux_386]="ELF.*386.*static.*, stripped"
 	[linux_arm]="ELF.*ARM.*EABI5.*static.*, stripped"
 	[linux_arm64]="ELF.*ARM.*aarch64.*static.*, stripped"
-	[darwin_386]="Mach-O i386"
 	[darwin_amd64]="Mach-O 64"
 	[darwin_arm64]="Mach-O 64"
 	[windows_386]="PE32[^+]"
 	[windows_amd64]="PE32\\+"
 	[freebsd_amd64]="x86-64.*FreeBSD.*static.*, stripped"
-	[freebsd_386]="80386.*FreeBSD.*static.*, stripped"
 	[onbuild_386]=""
 	[onbuild_amd64]=""
 )
