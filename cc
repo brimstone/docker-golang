@@ -122,6 +122,7 @@ esac
 
 # $0 must be go, or we should have gotten this far
 # The first arg should be 'build' or 'install', or we wouldn't have gotten this far
+SUBCMD=$1
 shift
 declare -a arr=()
 set_flags=0
@@ -141,9 +142,9 @@ while (( $# )); do
 	shift
 done
 if [ "$set_flags" = 0 ]; then
-	echo /usr/local/go/bin/go build -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
-	exec /usr/local/go/bin/go build -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
+	echo /usr/local/go/bin/go $SUBCMD -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
+	exec /usr/local/go/bin/go $SUBCMD -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
 else
-	echo /usr/local/go/bin/go build "${arr[@]}"
-	exec /usr/local/go/bin/go build "${arr[@]}"
+	echo /usr/local/go/bin/go $SUBCMD "${arr[@]}"
+	exec /usr/local/go/bin/go $SUBCMD "${arr[@]}"
 fi
