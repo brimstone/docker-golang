@@ -103,6 +103,8 @@ freebsd-amd64-c++)
 freebsd-*-go)
 	LDFLAGS="${LDFLAGS:-} -linkmode external -extldflags \"-static\""
 ;;
+android-*-go)
+;;
 *)
 	echo "Why does GOOS=${GOOS} GOARCH=${GOARCH} 0=$0?" >&2
 	exit 1
