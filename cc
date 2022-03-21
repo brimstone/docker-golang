@@ -105,6 +105,8 @@ freebsd-*-go)
 ;;
 android-*-go)
 ;;
+js-wasm-go)
+;;
 *)
 	echo "Why does GOOS=${GOOS} GOARCH=${GOARCH} 0=$0?" >&2
 	exit 1
