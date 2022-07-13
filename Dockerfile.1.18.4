@@ -1,14 +1,14 @@
 ARG IMAGE_NAME
 FROM ${IMAGE_NAME}:temp as image
 
-RUN GOLANG_VERSION=1.16.12 \
- && DIGEST='7d657e86493ac1d5892f340a7d88b862b12edb5ac6e73c099e8e0668a6c916b7' \
- && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
- && echo "${DIGEST} *go.tgz" | sha256sum -c - \
- &&	tar -C /usr/local -xzf go.tgz \
- && rm go.tgz \
- && echo PATH: $PATH \
- && go version
+RUN GOLANG_VERSION=1.18.4 \
+    && DIGEST='c9b099b68d93f5c5c8a8844a89f8db07eaa58270e3a1e01804f17f4cf8df02f5' \
+    && wget -O go.tgz "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
+    && echo "${DIGEST} *go.tgz" | sha256sum -c - \
+    &&	tar -C /usr/local -xzf go.tgz \
+    && rm go.tgz \
+    && echo PATH: $PATH \
+    && go version
 
 FROM image as onbuild
 
@@ -18,7 +18,7 @@ ONBUILD ARG REPOSITORY
 ONBUILD WORKDIR /go/src/${REPOSITORY}/
 ONBUILD ARG CGO_ENABLED
 ONBUILD ENV CGO_ENABLED=${CGO_ENABLED} \
-            GO111MODULE=on
+    GO111MODULE=on
 ONBUILD COPY go.mod .
 ONBUILD COPY go.sum .
 ONBUILD RUN go mod download
