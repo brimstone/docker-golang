@@ -6,7 +6,7 @@ check(){
 	nextversion="$1"
 	echo "Checking for next patch: $nextversion"
 
-	if wget -O /tmp/go.tgz "https://golang.org/dl/go$nextversion.linux-amd64.tar.gz"; then
+	if wget -O /tmp/go.tgz "https://go.dev/dl/go$nextversion.linux-amd64.tar.gz"; then
 		sha="$(sha256sum /tmp/go.tgz)"
 		rm /tmp/go.tgz
 		sha="${sha%% *}"
@@ -31,6 +31,7 @@ echo "Current major: $major minor: $minor patch: $patch"
 
 check "$major.$minor.$(( $patch+1 ))"
 check "$major.$(( $minor+1 ))"
+check "$major.$(( $minor+1 )).0"
 check "$(( $major+1 ))"
 
 [ -t 1 ] && echo "Checking for updated golangci-lint at https://github.com/repos/golangci/golangci-lint"
