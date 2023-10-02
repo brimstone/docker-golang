@@ -141,10 +141,11 @@ while (( $# )); do
 	fi
 	shift
 done
-if [ "$set_flags" = 0 ]; then
-	echo /usr/local/go/bin/go $SUBCMD -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
-	exec /usr/local/go/bin/go $SUBCMD -ldflags "-s -w ${LDFLAGS:-}" "${arr[@]}"
-else
-	echo /usr/local/go/bin/go $SUBCMD "${arr[@]}"
-	exec /usr/local/go/bin/go $SUBCMD "${arr[@]}"
+
+if [ "$set_flags" = 0 ] && [ -n "$LDFLAGS" ]; then
+   arr[${#arr[@]}]="-ldflags"
+   arr[${#arr[@]}]="$LDFLAGS"
 fi
+
+echo /usr/local/go/bin/go $SUBCMD "${arr[@]}"
+exec /usr/local/go/bin/go $SUBCMD "${arr[@]}"
