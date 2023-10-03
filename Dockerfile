@@ -2,7 +2,7 @@ FROM debian:buster
 
 SHELL ["/bin/bash", "-uec"]
 
-# Setup arm builder, windows, and OS X
+# Setup arm builder, windows
 RUN dpkg --add-architecture i386 \
  && apt-get update \
  && apt install -y build-essential libssl-dev \
@@ -39,26 +39,6 @@ RUN wget https://www.musl-libc.org/releases/musl-1.2.3.tar.gz \
  && make clean \
  && cd .. \
  && rm -rf musl*
-
-# TODO remove .sdk file?
-# Stolen from https://github.com/karalabe/xgo/blob/master/docker/base/Dockerfile
-ENV OSX_SDK=MacOSX10.11.sdk
-ENV OSX_NDK_X86 /usr/local/osx-ndk-x86
-RUN OSX_SDK_PATH=https://s3.dockerproject.org/darwin/v2/$OSX_SDK.tar.xz \
- && wget $OSX_SDK_PATH \
- && echo "694a66095a3514328e970b14978dc78c0f4d170e590fa7b2c3d3674b75f0b713 ${OSX_SDK}.tar.xz" | sha256sum -c - \
- && git clone https://github.com/tpoechtrager/osxcross.git /osxcross \
- && (cd /osxcross && git checkout 9498bfdc621716959e575bd6779c853a03cf5f8d && git reset --hard ) \
- && mv `basename $OSX_SDK_PATH` /osxcross/tarballs/ \
- && sed -i -e 's|-march=native||g' /osxcross/build_clang.sh /osxcross/wrapper/build.sh \
- && UNATTENDED=yes OSX_VERSION_MIN=10.6 /osxcross/build.sh \
- && mv /osxcross/target $OSX_NDK_X86 \
- && rm -rf /osxcross
-
-RUN wget https://github.com/karalabe/xgo/blob/master/docker/base/patch.tar.xz?raw=true -O patch.tar.xz \
- && echo "199d8fa4523c248d1ee49bf300da031e6a56aab5ec7261927e0a8bdfe0737bf4 patch.tar.xz" | sha256sum -c - \
- && tar -xf patch.tar.xz -C $OSX_NDK_X86/SDK/$OSX_SDK/usr/include/c++ \
- && rm patch.tar.xz
 
 # Setup Freebsd, stolen from https://github.com/sandvine/freebsd-cross-build
 RUN mkdir -p /freebsd/x86_64-pc-freebsd12 && cd /freebsd \
@@ -152,7 +132,7 @@ ENV CC=/bin/cc \
 	CXX=/bin/c++ \
 	GOPATH=/go \
 	HOME=/tmp \
-	PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/osx-ndk-x86/bin:/freebsd/bin:/usr/local/go/bin:/go/bin \
+	PATH=/sbin:/bin:/usr/sbin:/usr/bin:/freebsd/bin:/usr/local/go/bin:/go/bin \
     GOOS="linux" \
     LDFLAGS="" \
 	TAR="" \

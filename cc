@@ -60,30 +60,6 @@ windows-386-cc)
 windows-*-go)
 ;;
 ## Darwin
-darwin-386-cc)
-	export CC=o32-clang
-	exec "${CC}" "$@"
-;;
-darwin-386-c++)
-	export CXX=o32-clang++
-	exec "${CXX}" "$@"
-;;
-darwin-amd64-cc)
-	export CC=o64-clang
-	exec "${CC}" "$@"
-;;
-darwin-amd64-c++)
-	export CXX=o64-clang++
-	exec "${CXX}" "$@"
-;;
-darwin-arm64-cc)
-	export CC=o64-clang
-	exec "${CC}" "$@"
-;;
-darwin-arm64-c++)
-	export CXX=o64-clang++
-	exec "${CXX}" "$@"
-;;
 darwin-*-go)
 ;;
 ## Freebsd

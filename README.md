@@ -1,7 +1,7 @@
 golang
 ======
 
-This is a container to build golang static binaries with cgo musl for amd64, glibc for darwin, freebsd, and windows
+This is a container to build golang static binaries with cgo musl for amd64, glibc for freebsd, and windows
 
 [![microbadger][1]][2] [![docker hub][3]][4]
 
