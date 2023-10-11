@@ -98,29 +98,37 @@ esac
 
 # $0 must be go, or we should have gotten this far
 # The first arg should be 'build' or 'install', or we wouldn't have gotten this far
-SUBCMD=$1
+SUBCOMMAND=$1
+
 shift
-declare -a arr=()
-set_flags=0
+declare -a adjusted_args=()
+found_ldflags=0
+
+# loop over all arguments searching for -ldflags
 while (( $# )); do
+	# there are two cases -ldflags XYZ and -ldflags=XYZ
+	# when we find it, we'll inject LDFLAGS environment variable
 	if [ "$1" = "-ldflags" ]; then
 		shift
-		arr[${#arr[@]}]="-ldflags"
-		arr[${#arr[@]}]="$LDFLAGS $1"
-		set_flags=1
+		adjusted_args[${#adjusted_args[@]}]="-ldflags"
+		adjusted_args[${#adjusted_args[@]}]="$LDFLAGS $1"
+		found_ldflags=1
 	elif [ "${1:0:9}" = "-ldflags=" ]; then
-		arr[${#arr[@]}]="-ldflags"
-		arr[${#arr[@]}]="$LDFLAGS ${1:9}"
-		set_flags=1
+		adjusted_args[${#adjusted_args[@]}]="-ldflags"
+		adjusted_args[${#adjusted_args[@]}]="$LDFLAGS ${1:9}"
+		found_ldflags=1
 	else
-		arr[${#arr[@]}]=$1
+		adjusted_args[${#adjusted_args[@]}]=$1
 	fi
 	shift
 done
-if [ "$set_flags" = 0 ]; then
-	echo /usr/local/go/bin/go $SUBCMD -ldflags "${LDFLAGS:-}" "${arr[@]}"
-	exec /usr/local/go/bin/go $SUBCMD -ldflags "${LDFLAGS:-}" "${arr[@]}"
+
+if [ "$found_ldflags" = 0 ]; then
+	# we didn't find -ldflags, hence we'll prepend environment LDFLAGS instead.
+	echo /usr/local/go/bin/go $SUBCOMMAND -ldflags "${LDFLAGS:-}" "${adjusted_args[@]}"
+	exec /usr/local/go/bin/go $SUBCOMMAND -ldflags "${LDFLAGS:-}" "${adjusted_args[@]}"
 else
-	echo /usr/local/go/bin/go $SUBCMD "${arr[@]}"
-	exec /usr/local/go/bin/go $SUBCMD "${arr[@]}"
+	# otherwise, LDFLAGS and -ldflags have been merged already
+	echo /usr/local/go/bin/go $SUBCOMMAND "${adjusted_args[@]}"
+	exec /usr/local/go/bin/go $SUBCOMMAND "${adjusted_args[@]}"
 fi
