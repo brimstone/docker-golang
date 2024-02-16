@@ -3,12 +3,17 @@ set -ue
 
 GOOS=${GOOS:-linux}
 GOARCH=${GOARCH:-amd64}
+CGO_ENABLED=${CGO_ENABLED:-1}
 
 # If we're not `go build` or `go install`, abort
 if [ "$0" = "/bin/go" ] \
 	&& [ "$1" != "build" ] \
 	&& [ "$1" != "install" ]; then
 	exec /usr/local/go/bin/go "$@"
+fi
+
+if [ "$CGO_ENABLED" = "1" ]; then
+	LINKMODEFLAGS="-linkmode external -extldflags \"-static\""
 fi
 
 case "$GOOS-$GOARCH-$(basename "$0")" in
@@ -46,7 +51,7 @@ linux-amd64-c++)
 	exec "$CXX" "$@"
 ;;
 linux-*-go)
-	LDFLAGS="${LDFLAGS:-} -linkmode external -extldflags \"-static\""
+	LDFLAGS="${LDFLAGS:-} ${LINKMODEFLAGS:-}"
 ;;
 ## Windows
 windows-amd64-cc)
@@ -85,7 +90,7 @@ freebsd-amd64-c++)
 	exec "${CXX}" "$@"
 ;;
 freebsd-*-go)
-	LDFLAGS="${LDFLAGS:-} -linkmode external -extldflags \"-static\""
+	LDFLAGS="${LDFLAGS:-} ${LINKMODEFLAGS:-}"
 ;;
 js-wasm-go)
 	exec /usr/local/go/bin/go "$@"
