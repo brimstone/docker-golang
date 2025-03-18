@@ -19,7 +19,7 @@ RUN mkdir /tmp/tools \
  && go build -o /go/bin/goreleaser -v \
  && : "Install golangci-lint" \
  && cd /tmp/tools \
- && git clone https://github.com/golangci/golangci-lint -b v1.64.7 \
+ && git clone https://github.com/golangci/golangci-lint -b v1.64.8 \
  && cd golangci-lint \
  && go build -o /go/bin/golangci-lint -v ./cmd/golangci-lint \
  && : "Clean up the layer" \
